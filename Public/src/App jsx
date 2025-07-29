@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
 // --- SVG ICONS ---
-// A collection of SVG paths for all the icons used in the app.
 const ICONS = {
   PLAY_FILLED: "M8 5v14l11-7z",
   PAUSE_FILLED: "M6 19h4V5H6v14zm8-14v14h4V5h-4z",
@@ -17,26 +16,12 @@ const ICONS = {
   BROWSE: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93s3.05-7.44 7-7.93v15.86zm2-15.86c1.03.13 2 .45 2.87.93L15.87 5c-1.03-.13-2-.45-2.87-.93zM14 19.07c-1.03-.13-2-.45-2.87-.93L10.13 19c1.03.13 2 .45 2.87.93z"
 };
 
-// --- HELPER COMPONENTS ---
-
-/**
- * A reusable, animated icon component.
- * @param {string} path - The SVG path data.
- * @param {string} className - Tailwind CSS classes.
- */
 const Icon = ({ path, className = "w-6 h-6" }) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={className}>
         <path d={path} />
     </svg>
 );
 
-/**
- * A reusable, animated button component for the player controls.
- * @param {function} onClick - The function to call on click.
- * @param {boolean} disabled - Whether the button is disabled.
- * @param {string} iconPath - The SVG path for the icon.
- * @param {string} className - Additional Tailwind CSS classes.
- */
 const PlayerButton = ({ onClick, disabled, iconPath, className = "w-9 h-9" }) => (
     <button
         onClick={onClick}
@@ -47,10 +32,7 @@ const PlayerButton = ({ onClick, disabled, iconPath, className = "w-9 h-9" }) =>
     </button>
 );
 
-// --- MAIN APP COMPONENT ---
-
 function App() {
-    // --- STATE MANAGEMENT ---
     const [searchTerm, setSearchTerm] = useState('lofi hip hop radio');
     const [searchResults, setSearchResults] = useState([]);
     const [queue, setQueue] = useState([]);
@@ -65,14 +47,10 @@ function App() {
     const progressRef = useRef(null);
     const intervalRef = useRef(null);
 
-    // Read the API key securely from environment variables
     const API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY; 
 
     const nowPlaying = queue[currentTrackIndex];
 
-    // --- EFFECTS ---
-    
-    // Effect to load the YouTube IFrame API script
     useEffect(() => {
         if (window.YT) {
             setIsApiReady(true);
@@ -89,7 +67,6 @@ function App() {
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     }, []);
 
-    // Effect to create, update, and destroy the player instance
     useEffect(() => {
         if (isApiReady && nowPlaying) {
             if (playerRef.current) {
@@ -101,11 +78,11 @@ function App() {
                 height: '0', width: '0',
                 playerVars: {
                     autoplay: 1, controls: 0, fs: 0, 
-                    iv_load_policy: 3, // Disables video annotations
-                    modestbranding: 1, // Removes YouTube logo
+                    iv_load_policy: 3,
+                    modestbranding: 1,
                     playsinline: 1,
                     disablekb: 1,
-                    rel: 0 // Don't show related videos
+                    rel: 0
                 },
                 events: {
                     'onReady': onPlayerReady,
@@ -122,8 +99,6 @@ function App() {
         }
     }, [isApiReady, nowPlaying]);
 
-
-    // Effect to handle the progress bar updates
     useEffect(() => {
         if (isPlaying) {
             startProgressInterval();
@@ -133,12 +108,10 @@ function App() {
         return () => clearInterval(intervalRef.current);
     }, [isPlaying, currentTrackIndex]);
 
-    // Effect to perform an initial search on load
     useEffect(() => {
-        handleSearch();
-    }, []);
+        if(API_KEY) handleSearch();
+    }, [API_KEY]);
 
-    // --- CORE FUNCTIONS ---
     const startProgressInterval = () => {
         clearInterval(intervalRef.current);
         intervalRef.current = setInterval(() => {
@@ -182,7 +155,6 @@ function App() {
         setIsLoading(false);
     };
 
-    // --- PLAYER CONTROLS ---
     const handleSelectTrack = (track) => {
         const newQueue = [track, ...queue.filter(t => t.id !== track.id)];
         setQueue(newQueue);
@@ -232,7 +204,6 @@ function App() {
         }
     };
 
-    // --- YOUTUBE PLAYER EVENT HANDLERS ---
     const onPlayerReady = (event) => {
         event.target.setVolume(volume);
         event.target.playVideo();
@@ -246,16 +217,14 @@ function App() {
     
     const onPlayerError = (event) => {
         setError(`YouTube Player Error. Code: ${event.data}. This video may be private or restricted.`);
-        playNext(); // Try to play the next song
+        playNext();
     }
 
-    // --- RENDER ---
     return (
         <div className="bg-white text-black min-h-screen font-['Inter'] flex flex-col antialiased">
             <div id="youtube-player-container" className="hidden"></div>
             
             <div className="flex flex-grow overflow-hidden">
-                {/* --- SIDEBAR (for Desktop) --- */}
                 <aside className="w-64 bg-neutral-50 border-r border-neutral-200 p-4 flex-shrink-0 hidden md:flex flex-col">
                     <div className="flex items-center justify-between mb-8">
                         <div className="flex items-center gap-2">
@@ -294,7 +263,6 @@ function App() {
                     </nav>
                 </aside>
 
-                {/* --- MAIN CONTENT --- */}
                 <main className="flex-grow bg-white overflow-y-auto">
                     <div className="p-4 sm:p-6 lg:p-8">
                         <h1 className="text-3xl font-bold mb-6">Browse</h1>
@@ -333,7 +301,6 @@ function App() {
                 </main>
             </div>
 
-            {/* --- FOOTER PLAYER CONTROLS --- */}
             <footer className="bg-neutral-50/80 backdrop-blur-md border-t border-neutral-200 mt-auto z-10 flex-shrink-0">
                 <div className="w-full bg-neutral-300 h-1 group cursor-pointer" ref={progressRef} onClick={handleSeek}>
                     <div className="bg-neutral-500 h-1 relative pointer-events-none" style={{ width: `${progress}%` }}>
