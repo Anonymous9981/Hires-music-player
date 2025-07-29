@@ -65,8 +65,8 @@ function App() {
     const progressRef = useRef(null);
     const intervalRef = useRef(null);
 
-    // This is your YouTube API Key.
-    const API_KEY = "AIzaSyDOSbOYdwTnhb0hrJVing6Pm0b_jKT5Itg"; 
+    // Read the API key securely from environment variables
+    const API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY; 
 
     const nowPlaying = queue[currentTrackIndex];
 
@@ -155,7 +155,7 @@ function App() {
         if (e) e.preventDefault();
         if (!searchTerm.trim()) return;
         if (!API_KEY) {
-            setError("API Key is missing.");
+            setError("YouTube API Key is not configured. Please set it up in your environment variables.");
             return;
         }
         setIsLoading(true);
@@ -380,4 +380,3 @@ function App() {
 
 export default App;
 
-                          
