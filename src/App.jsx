@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-// --- SVG ICONS ---
+// --- SVG ICONS (New Icons Added) ---
 const ICONS = {
   PLAY_FILLED: "M8 5v14l11-7z",
   PAUSE_FILLED: "M6 19h4V5H6v14zm8-14v14h4V5h-4z",
@@ -13,7 +13,13 @@ const ICONS = {
   CHEVRON_RIGHT: "M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z",
   MUSIC_NOTE: "M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z",
   RADIO: "M3.24 6.15C2.51 6.43 2 7.17 2 8v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2H8.3l8.26-3.34L15.28 1 3.24 6.15zM7 20c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm13-8h-2v-2h2v2zm-4 0h-2v-2h2v2z",
-  BROWSE: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93s3.05-7.44 7-7.93v15.86zm2-15.86c1.03.13 2 .45 2.87.93L15.87 5c-1.03-.13-2-.45-2.87-.93zM14 19.07c-1.03-.13-2-.45-2.87-.93L10.13 19c1.03.13 2 .45 2.87.93z"
+  BROWSE: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93s3.05-7.44 7-7.93v15.86zm2-15.86c1.03.13 2 .45 2.87.93L15.87 5c-1.03-.13-2-.45-2.87-.93zM14 19.07c-1.03-.13-2-.45-2.87-.93L10.13 19c1.03.13 2 .45 2.87.93z",
+  DOTS_VERTICAL: "M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z",
+  PLAYLIST: "M2 16h8v-2H2v2zm0-4h12v-2H2v2zm0-4h12V6H2v2zm14 4h4v-2h-4v2zm0-4h4V6h-4v2zm0 8h4v-2h-4v2z",
+  SETTINGS: "M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z",
+  SHARE: "M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.18c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3s3-1.34 3-3-1.34-3-3-3z",
+  PLUS: "M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z",
+  CLOSE: "M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
 };
 
 const Icon = ({ path, className = "w-6 h-6" }) => (
@@ -33,6 +39,7 @@ const PlayerButton = ({ onClick, disabled, iconPath, className = "w-9 h-9" }) =>
 );
 
 function App() {
+    const [activeView, setActiveView] = useState('browse'); // browse, playlists, settings
     const [searchTerm, setSearchTerm] = useState('lofi hip hop radio');
     const [searchResults, setSearchResults] = useState([]);
     const [queue, setQueue] = useState([]);
@@ -43,37 +50,75 @@ function App() {
     const [progress, setProgress] = useState(0);
     const [volume, setVolume] = useState(80);
     const [isApiReady, setIsApiReady] = useState(false);
+    
+    // --- New State Variables ---
+    const [playlists, setPlaylists] = useState([]);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [menuTrack, setMenuTrack] = useState(null);
+    const [isPlaylistModalOpen, setIsPlaylistModalOpen] = useState(false);
+    const [newPlaylistName, setNewPlaylistName] = useState("");
+    const [quality, setQuality] = useState('high'); // 'high' or 'low'
+
     const playerRef = useRef(null);
     const progressRef = useRef(null);
     const intervalRef = useRef(null);
 
     const API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY; 
-
     const nowPlaying = queue[currentTrackIndex];
 
-    // --- START: Media Session API for Background Playback ---
+    // --- Load Playlists and Settings from localStorage on initial render ---
+    useEffect(() => {
+        try {
+            const savedPlaylists = localStorage.getItem('musicPlayer-playlists');
+            if (savedPlaylists) {
+                setPlaylists(JSON.parse(savedPlaylists));
+            }
+            const savedQuality = localStorage.getItem('musicPlayer-quality');
+            if (savedQuality) {
+                setQuality(savedQuality);
+            }
+        } catch (e) {
+            console.error("Failed to load data from localStorage", e);
+        }
+    }, []);
+
+    // --- Save Playlists and Settings to localStorage whenever they change ---
+    useEffect(() => {
+        try {
+            localStorage.setItem('musicPlayer-playlists', JSON.stringify(playlists));
+        } catch (e) {
+            console.error("Failed to save playlists to localStorage", e);
+        }
+    }, [playlists]);
+
+    useEffect(() => {
+        try {
+            localStorage.setItem('musicPlayer-quality', quality);
+        } catch (e) {
+            console.error("Failed to save quality to localStorage", e);
+        }
+    }, [quality]);
+
+
+    // --- Media Session API for Background Playback ---
     useEffect(() => {
         if ('mediaSession' in navigator) {
             if (nowPlaying) {
                 navigator.mediaSession.metadata = new window.MediaMetadata({
                     title: nowPlaying.title,
                     artist: nowPlaying.artist,
-                    artwork: [
-                        { src: nowPlaying.thumbnail, sizes: '512x512', type: 'image/jpeg' },
-                    ]
+                    artwork: [{ src: nowPlaying.thumbnail, sizes: '512x512', type: 'image/jpeg' }]
                 });
-
                 navigator.mediaSession.setActionHandler('play', () => { togglePlayPause(); });
                 navigator.mediaSession.setActionHandler('pause', () => { togglePlayPause(); });
                 navigator.mediaSession.setActionHandler('previoustrack', () => { playPrevious(); });
                 navigator.mediaSession.setActionHandler('nexttrack', () => { playNext(); });
             }
-            
             navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
         }
     }, [nowPlaying, isPlaying]);
-    // --- END: Media Session API ---
 
+    // --- YouTube IFrame API Loader ---
     useEffect(() => {
         if (window.YT) {
             setIsApiReady(true);
@@ -81,47 +126,29 @@ function App() {
         }
         const tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
-        
-        window.onYouTubeIframeAPIReady = () => {
-            setIsApiReady(true);
-        };
-
+        window.onYouTubeIframeAPIReady = () => { setIsApiReady(true); };
         const firstScriptTag = document.getElementsByTagName('script')[0];
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     }, []);
 
+    // --- YouTube Player Initializer ---
     useEffect(() => {
         if (isApiReady && nowPlaying) {
             if (playerRef.current) {
                 playerRef.current.destroy();
             }
-
             const newPlayer = new window.YT.Player('youtube-player-container', {
                 videoId: nowPlaying.id,
                 height: '0', width: '0',
-                playerVars: {
-                    autoplay: 1, controls: 0, fs: 0, 
-                    iv_load_policy: 3,
-                    modestbranding: 1,
-                    playsinline: 1,
-                    disablekb: 1,
-                    rel: 0
-                },
-                events: {
-                    'onReady': onPlayerReady,
-                    'onStateChange': onPlayerStateChange,
-                    'onError': onPlayerError,
-                }
+                playerVars: { autoplay: 1, controls: 0, fs: 0, iv_load_policy: 3, modestbranding: 1, playsinline: 1, disablekb: 1, rel: 0 },
+                events: { 'onReady': onPlayerReady, 'onStateChange': onPlayerStateChange, 'onError': onPlayerError }
             });
             playerRef.current = newPlayer;
         }
-        return () => {
-            if (playerRef.current) {
-                playerRef.current.destroy();
-            }
-        }
+        return () => { if (playerRef.current) playerRef.current.destroy(); }
     }, [isApiReady, nowPlaying]);
 
+    // --- Progress Bar Updater ---
     useEffect(() => {
         if (isPlaying) {
             startProgressInterval();
@@ -131,6 +158,7 @@ function App() {
         return () => clearInterval(intervalRef.current);
     }, [isPlaying, currentTrackIndex]);
 
+    // --- Initial Search ---
     useEffect(() => {
         if(API_KEY) handleSearch();
     }, [API_KEY]);
@@ -151,14 +179,15 @@ function App() {
         if (e) e.preventDefault();
         if (!searchTerm.trim()) return;
         if (!API_KEY) {
-            setError("YouTube API Key is not configured. Please set it up in your environment variables.");
+            setError("YouTube API Key is not configured.");
             return;
         }
         setIsLoading(true);
         setError(null);
         setSearchResults([]);
         try {
-            const response = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&q=${encodeURIComponent(searchTerm)}&type=video&key=${API_KEY}`);
+            const videoDefinition = quality === 'low' ? 'standard' : 'high';
+            const response = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&q=${encodeURIComponent(searchTerm)}&type=video&videoDefinition=${videoDefinition}&key=${API_KEY}`);
             if (!response.ok) {
                  const errorData = await response.json();
                  throw new Error(errorData.error.message || `HTTP error! status: ${response.status}`);
@@ -177,17 +206,41 @@ function App() {
         }
         setIsLoading(false);
     };
+    
+    // --- Autoplay Related Song ---
+    const playRelatedSong = async () => {
+        if (!nowPlaying) return;
+        try {
+            const response = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&relatedToVideoId=${nowPlaying.id}&type=video&key=${API_KEY}`);
+            if (!response.ok) return;
+            const data = await response.json();
+            if (data.items.length > 0) {
+                const nextTrack = {
+                    id: data.items[0].id.videoId,
+                    title: data.items[0].snippet.title.replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, "&"),
+                    artist: data.items[0].snippet.channelTitle,
+                    thumbnail: data.items[0].snippet.thumbnails.high.url
+                };
+                setQueue(prev => [...prev, nextTrack]);
+                // The next track will be played automatically by the onPlayerStateChange ENDED event
+            }
+        } catch (err) {
+            console.error("Failed to fetch related video", err);
+        }
+    };
 
     const handleSelectTrack = (track) => {
-        const newQueue = [track, ...queue.filter(t => t.id !== track.id)];
+        const newQueue = [track, ...queue.slice(currentTrackIndex + 1)];
         setQueue(newQueue);
         setCurrentTrackIndex(0);
         setIsPlaying(true);
     };
 
     const playNext = () => {
-        if (queue.length > 0) {
-            setCurrentTrackIndex((prevIndex) => (prevIndex + 1) % queue.length);
+        if (currentTrackIndex < queue.length - 1) {
+            setCurrentTrackIndex(prevIndex => prevIndex + 1);
+        } else {
+            playRelatedSong(); // Autoplay when queue ends
         }
     };
 
@@ -199,22 +252,17 @@ function App() {
 
     const togglePlayPause = () => {
         if (!playerRef.current) return;
-        if (isPlaying) {
-            playerRef.current.pauseVideo();
-        } else {
-            playerRef.current.playVideo();
-        }
+        if (isPlaying) playerRef.current.pauseVideo();
+        else playerRef.current.playVideo();
     };
 
     const handleSeek = (e) => {
         const progressContainer = progressRef.current;
         if (!progressContainer || !playerRef.current) return;
-
         const clickPositionX = e.clientX - progressContainer.getBoundingClientRect().left;
         const containerWidth = progressContainer.offsetWidth;
         const seekRatio = clickPositionX / containerWidth;
         const duration = playerRef.current.getDuration() || 0;
-        
         playerRef.current.seekTo(duration * seekRatio, true);
         setProgress(seekRatio * 100);
     };
@@ -222,9 +270,7 @@ function App() {
     const handleVolumeChange = (e) => {
         const newVolume = e.target.value;
         setVolume(newVolume);
-        if (playerRef.current) {
-            playerRef.current.setVolume(newVolume);
-        }
+        if (playerRef.current) playerRef.current.setVolume(newVolume);
     };
 
     const onPlayerReady = (event) => {
@@ -241,132 +287,131 @@ function App() {
     const onPlayerError = (event) => {
         setError(`YouTube Player Error. Code: ${event.data}. This video may be private or restricted.`);
         playNext();
-    }
+    };
 
-    return (
-        <div className="bg-white text-black min-h-screen font-['Inter'] flex flex-col antialiased">
-            <div id="youtube-player-container" className="hidden"></div>
-            
-            <div className="flex flex-grow overflow-hidden">
-                <aside className="w-64 bg-neutral-50 border-r border-neutral-200 p-4 flex-shrink-0 hidden md:flex flex-col">
-                    <div className="flex items-center justify-between mb-8">
-                        <div className="flex items-center gap-2">
-                           <button className="w-3 h-3 bg-red-500 rounded-full"></button>
-                           <button className="w-3 h-3 bg-yellow-500 rounded-full"></button>
-                           <button className="w-3 h-3 bg-green-500 rounded-full"></button>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <Icon path={ICONS.CHEVRON_LEFT} className="w-6 h-6 text-neutral-400" />
-                            <Icon path={ICONS.CHEVRON_RIGHT} className="w-6 h-6 text-neutral-300" />
+    // --- Menu and Playlist Functions ---
+    const openMenu = (track) => {
+        setMenuTrack(track);
+        setIsMenuOpen(true);
+    };
+
+    const closeMenu = () => {
+        setIsMenuOpen(false);
+        setMenuTrack(null);
+    };
+
+    const handleAddToQueue = () => {
+        setQueue(prev => [...prev, menuTrack]);
+        closeMenu();
+    };
+
+    const handleShare = async () => {
+        const shareData = {
+            title: menuTrack.title,
+            text: `Check out ${menuTrack.title} by ${menuTrack.artist}`,
+            url: `https://www.youtube.com/watch?v=${menuTrack.id}`
+        };
+        try {
+            if (navigator.share) {
+                await navigator.share(shareData);
+            } else {
+                // Fallback for desktop or browsers without share API
+                navigator.clipboard.writeText(shareData.url);
+                alert("Link copied to clipboard!");
+            }
+        } catch (err) {
+            console.error("Share failed:", err);
+        }
+        closeMenu();
+    };
+
+    const createPlaylist = () => {
+        if (newPlaylistName.trim()) {
+            const newPlaylist = { id: Date.now(), name: newPlaylistName, tracks: [menuTrack] };
+            setPlaylists(prev => [...prev, newPlaylist]);
+            setNewPlaylistName("");
+            setIsPlaylistModalOpen(false);
+            closeMenu();
+        }
+    };
+    
+    const addToPlaylist = (playlistId) => {
+        setPlaylists(prev => prev.map(p => {
+            if (p.id === playlistId && !p.tracks.some(t => t.id === menuTrack.id)) {
+                return { ...p, tracks: [...p.tracks, menuTrack] };
+            }
+            return p;
+        }));
+        setIsPlaylistModalOpen(false);
+        closeMenu();
+    };
+
+    const renderView = () => {
+        switch (activeView) {
+            case 'playlists':
+                return (
+                    <div className="p-4 sm:p-6 lg:p-8">
+                        <h1 className="text-3xl font-bold mb-6">Playlists</h1>
+                        {playlists.length > 0 ? (
+                            <div className="space-y-4">
+                                {playlists.map(p => (
+                                    <div key={p.id} className="bg-neutral-100 p-4 rounded-lg">
+                                        <h2 className="font-bold">{p.name}</h2>
+                                        <p className="text-sm text-neutral-500">{p.tracks.length} songs</p>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <p className="text-neutral-500">You haven't created any playlists yet.</p>
+                        )}
+                    </div>
+                );
+            case 'settings':
+                return (
+                    <div className="p-4 sm:p-6 lg:p-8">
+                        <h1 className="text-3xl font-bold mb-6">Settings</h1>
+                        <div className="space-y-4">
+                           <div>
+                               <label htmlFor="quality" className="font-semibold block mb-2">Streaming Quality</label>
+                               <select 
+                                 id="quality" 
+                                 value={quality} 
+                                 onChange={(e) => setQuality(e.target.value)}
+                                 className="bg-neutral-200 rounded-md p-2 w-full"
+                               >
+                                   <option value="high">High Quality</option>
+                                   <option value="low">Data Saver (Lower Quality)</option>
+                               </select>
+                               <p className="text-sm text-neutral-500 mt-1">"Data Saver" may reduce mobile data usage.</p>
+                           </div>
                         </div>
                     </div>
-                    <form onSubmit={handleSearch} className="relative mb-8">
-                        <Icon path={ICONS.SEARCH} className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400" />
-                        <input
-                            className="w-full bg-neutral-200 rounded-md py-2 pl-10 pr-3 text-sm placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-pink-500"
-                            placeholder="Search"
-                            type="search"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                    </form>
-                    <nav className="space-y-2">
-                        <a href="#" className="flex items-center gap-3 text-pink-600 font-semibold bg-pink-100 p-2 rounded-md">
-                            <Icon path={ICONS.BROWSE} className="w-6 h-6" />
-                            <span>Browse</span>
-                        </a>
-                        <a href="#" className="flex items-center gap-3 text-neutral-700 hover:bg-neutral-100 font-semibold p-2 rounded-md transition-colors">
-                            <Icon path={ICONS.RADIO} className="w-6 h-6" />
-                            <span>Radio</span>
-                        </a>
-                         <a href="#" className="flex items-center gap-3 text-neutral-700 hover:bg-neutral-100 font-semibold p-2 rounded-md transition-colors">
-                            <Icon path={ICONS.MUSIC_NOTE} className="w-6 h-6" />
-                            <span>Library</span>
-                        </a>
-                    </nav>
-                </aside>
-
-                <main className="flex-grow bg-white overflow-y-auto">
+                );
+            case 'browse':
+            default:
+                return (
                     <div className="p-4 sm:p-6 lg:p-8">
-                        <h1 className="text-3xl font-bold mb-6">Browse</h1>
-                        {error && (
-                            <div className="bg-red-100 text-red-700 p-4 rounded-lg mb-4 text-center border border-red-200">{error}</div>
-                        )}
-
+                        <div className="md:hidden mb-4">
+                             <form onSubmit={handleSearch} className="relative">
+                                <Icon path={ICONS.SEARCH} className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400" />
+                                <input
+                                    className="w-full bg-neutral-200 rounded-md py-2 pl-10 pr-3 text-sm placeholder-neutral-500"
+                                    placeholder="Search"
+                                    type="search"
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                />
+                            </form>
+                        </div>
+                        <h1 className="text-3xl font-bold mb-6 hidden md:block">Browse</h1>
+                        {error && ( <div className="bg-red-100 text-red-700 p-4 rounded-lg mb-4 text-center border border-red-200">{error}</div> )}
                         {isLoading ? (
                             <div className="flex justify-center items-center h-64">
                                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-pink-600"></div>
                             </div>
                         ) : searchResults.length > 0 ? (
-                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-4 gap-y-6">
                                 {searchResults.map(track => (
-                                    <div key={track.id} onClick={() => handleSelectTrack(track)} className="cursor-pointer group">
-                                        <div className="relative aspect-square rounded-lg overflow-hidden shadow-md transition-all duration-300 group-hover:shadow-xl">
-                                            <img src={track.thumbnail} alt={track.title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"/>
-                                            <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                                <div className="bg-white/80 backdrop-blur-sm rounded-full p-3 transform transition-transform active:scale-90">
-                                                    <Icon path={ICONS.PLAY_FILLED} className="w-8 h-8 text-black" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <p className="font-semibold truncate mt-2 text-sm">{track.title}</p>
-                                        <p className="text-neutral-500 truncate text-xs">{track.artist}</p>
-                                    </div>
-                                ))}
-                            </div>
-                        ) : (
-                             <div className="text-center py-16 text-neutral-500">
-                                <h2 className="text-2xl font-bold mb-2">No Results Found</h2>
-                                <p>Try searching for something else.</p>
-                             </div>
-                        )}
-                    </div>
-                </main>
-            </div>
-
-            <footer className="bg-neutral-50/80 backdrop-blur-md border-t border-neutral-200 mt-auto z-10 flex-shrink-0">
-                <div className="w-full bg-neutral-300 h-1 group cursor-pointer" ref={progressRef} onClick={handleSeek}>
-                    <div className="bg-neutral-500 h-1 relative pointer-events-none" style={{ width: `${progress}%` }}>
-                       <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-neutral-800 rounded-full opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-                    </div>
-                </div>
-                <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex items-center justify-between h-20">
-                        <div className="flex items-center gap-3 w-1/3">
-                            {nowPlaying ? <>
-                                <img src={nowPlaying.thumbnail} alt={nowPlaying.title} className="w-12 h-12 rounded-md object-cover shadow-sm"/>
-                                <div className="truncate">
-                                    <p className="font-semibold truncate text-sm">{nowPlaying.title}</p>
-                                    <p className="text-xs text-neutral-600 truncate">{nowPlaying.artist}</p>
-                                </div>
-                            </> : <div className="w-12 h-12 bg-neutral-200 rounded-md"></div>}
-                        </div>
-
-                        <div className="flex items-center gap-6 w-1/3 justify-center">
-                            <PlayerButton onClick={playPrevious} disabled={queue.length < 2} iconPath={ICONS.REWIND} />
-                            <button onClick={togglePlayPause} className="bg-neutral-200 text-neutral-800 rounded-full p-3 hover:bg-neutral-300 transition-transform transform active:scale-90 shadow-sm">
-                                <Icon path={isPlaying ? ICONS.PAUSE_FILLED : ICONS.PLAY_FILLED} className="w-8 h-8" />
-                            </button>
-                            <PlayerButton onClick={playNext} disabled={queue.length < 2} iconPath={ICONS.FORWARD} />
-                        </div>
-
-                        <div className="w-1/3 flex items-center justify-end gap-3">
-                           <Icon path={volume > 0 ? ICONS.VOLUME_HIGH : ICONS.VOLUME_OFF} className="w-5 h-5 text-neutral-500" />
-                           <input 
-                             type="range" 
-                             min="0" 
-                             max="100" 
-                             value={volume}
-                             onChange={handleVolumeChange}
-                             className="w-24 h-1 bg-neutral-300 rounded-lg appearance-none cursor-pointer accent-neutral-600"
-                           />
-                        </div>
-                    </div>
-                </div>
-            </footer>
-        </div>
-    );
-}
-
-export default App;
-
+                                    <div key={track.id} className="group">
+                                        <div onClick={() => handleSelectTrack(track)} className="relative aspect-square rounded-lg overflow-hidden shadow-md transition-all duration-300 group-hover:shadow-xl cursor-pointer">
+                                            <img src={track.thumbnail} alt={track.title} className="w-full h-full o
