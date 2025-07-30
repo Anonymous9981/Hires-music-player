@@ -51,6 +51,29 @@ function App() {
 
     const nowPlaying = queue[currentTrackIndex];
 
+    // --- START: Media Session API for Background Playback ---
+    useEffect(() => {
+        if ('mediaSession' in navigator) {
+            if (nowPlaying) {
+                navigator.mediaSession.metadata = new window.MediaMetadata({
+                    title: nowPlaying.title,
+                    artist: nowPlaying.artist,
+                    artwork: [
+                        { src: nowPlaying.thumbnail, sizes: '512x512', type: 'image/jpeg' },
+                    ]
+                });
+
+                navigator.mediaSession.setActionHandler('play', () => { togglePlayPause(); });
+                navigator.mediaSession.setActionHandler('pause', () => { togglePlayPause(); });
+                navigator.mediaSession.setActionHandler('previoustrack', () => { playPrevious(); });
+                navigator.mediaSession.setActionHandler('nexttrack', () => { playNext(); });
+            }
+            
+            navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
+        }
+    }, [nowPlaying, isPlaying]);
+    // --- END: Media Session API ---
+
     useEffect(() => {
         if (window.YT) {
             setIsApiReady(true);
