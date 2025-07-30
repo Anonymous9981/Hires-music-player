@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-// --- SVG ICONS ---
+// --- SVG ICONS (omitted for brevity, no changes here) ---
 const ICONS = {
   PLAY_FILLED: "M8 5v14l11-7z",
   PAUSE_FILLED: "M6 19h4V5H6v14zm8-14v14h4V5h-4z",
@@ -46,6 +46,18 @@ function App() {
     const playerRef = useRef(null);
     const progressRef = useRef(null);
     const intervalRef = useRef(null);
+    
+    // --- START: ON-SCREEN CONSOLE ---
+    const [debugMessages, setDebugMessages] = useState([]);
+    useEffect(() => {
+        const originalConsoleLog = console.log;
+        console.log = (...args) => {
+            originalConsoleLog(...args);
+            setDebugMessages(prev => [...prev, args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ')]);
+        };
+        return () => { console.log = originalConsoleLog; };
+    }, []);
+    // --- END: ON-SCREEN CONSOLE ---
 
     const API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY; 
 
@@ -76,27 +88,12 @@ function App() {
             const newPlayer = new window.YT.Player('youtube-player-container', {
                 videoId: nowPlaying.id,
                 height: '0', width: '0',
-                playerVars: {
-                    autoplay: 1, controls: 0, fs: 0, 
-                    iv_load_policy: 3,
-                    modestbranding: 1,
-                    playsinline: 1,
-                    disablekb: 1,
-                    rel: 0
-                },
-                events: {
-                    'onReady': onPlayerReady,
-                    'onStateChange': onPlayerStateChange,
-                    'onError': onPlayerError,
-                }
+                playerVars: { autoplay: 1, controls: 0, fs: 0, iv_load_policy: 3, modestbranding: 1, playsinline: 1, disablekb: 1, rel: 0 },
+                events: { 'onReady': onPlayerReady, 'onStateChange': onPlayerStateChange, 'onError': onPlayerError }
             });
             playerRef.current = newPlayer;
         }
-        return () => {
-            if (playerRef.current) {
-                playerRef.current.destroy();
-            }
-        }
+        return () => { if (playerRef.current) { playerRef.current.destroy(); } }
     }, [isApiReady, nowPlaying]);
 
     useEffect(() => {
@@ -125,10 +122,7 @@ function App() {
     };
 
     const handleSearch = async (e) => {
-        // *** THIS IS THE DEBUGGING LINE I ADDED ***
-        // It will print the API key to your browser's developer console.
         console.log("API Key being used:", import.meta.env.VITE_YOUTUBE_API_KEY);
-
         if (e) e.preventDefault();
         if (!searchTerm.trim()) return;
         if (!API_KEY) {
@@ -190,12 +184,10 @@ function App() {
     const handleSeek = (e) => {
         const progressContainer = progressRef.current;
         if (!progressContainer || !playerRef.current) return;
-
         const clickPositionX = e.clientX - progressContainer.getBoundingClientRect().left;
         const containerWidth = progressContainer.offsetWidth;
         const seekRatio = clickPositionX / containerWidth;
         const duration = playerRef.current.getDuration() || 0;
-        
         playerRef.current.seekTo(duration * seekRatio, true);
         setProgress(seekRatio * 100);
     };
@@ -225,10 +217,11 @@ function App() {
     }
 
     return (
-        <div className="bg-white text-black min-h-screen font-['Inter'] flex flex-col antialiased">
+        <div className="bg-white text-black min-h-screen font-['Inter'] flex flex-col antialiased pb-20"> {/* Added padding-bottom to avoid overlap */}
             <div id="youtube-player-container" className="hidden"></div>
             
             <div className="flex flex-grow overflow-hidden">
+                {/* --- ASIDE (Sidebar) --- */}
                 <aside className="w-64 bg-neutral-50 border-r border-neutral-200 p-4 flex-shrink-0 hidden md:flex flex-col">
                     <div className="flex items-center justify-between mb-8">
                         <div className="flex items-center gap-2">
@@ -267,6 +260,7 @@ function App() {
                     </nav>
                 </aside>
 
+                {/* --- MAIN CONTENT --- */}
                 <main className="flex-grow bg-white overflow-y-auto">
                     <div className="p-4 sm:p-6 lg:p-8">
                         <h1 className="text-3xl font-bold mb-6">Browse</h1>
@@ -305,6 +299,7 @@ function App() {
                 </main>
             </div>
 
+            {/* --- FOOTER PLAYER --- */}
             <footer className="bg-neutral-50/80 backdrop-blur-md border-t border-neutral-200 mt-auto z-10 flex-shrink-0">
                 <div className="w-full bg-neutral-300 h-1 group cursor-pointer" ref={progressRef} onClick={handleSeek}>
                     <div className="bg-neutral-500 h-1 relative pointer-events-none" style={{ width: `${progress}%` }}>
@@ -313,7 +308,7 @@ function App() {
                 </div>
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between h-20">
-                        <div className="flex items-center gap-3 w-1/h-full">
+                        <div className="flex items-center gap-3 w-1/3">
                             {nowPlaying ? <>
                                 <img src={nowPlaying.thumbnail} alt={nowPlaying.title} className="w-12 h-12 rounded-md object-cover shadow-sm"/>
                                 <div className="truncate">
@@ -345,10 +340,17 @@ function App() {
                     </div>
                 </div>
             </footer>
+            
+            {/* --- ON-SCREEN DEBUG CONSOLE --- */}
+            <div className="fixed bottom-20 left-0 right-0 bg-black/80 text-white p-2 h-48 overflow-y-auto z-50 text-xs font-mono">
+                <h3 className="font-bold border-b border-neutral-600 mb-1 pb-1">On-Screen Console</h3>
+                {debugMessages.map((msg, index) => (
+                    <pre key={index} className="whitespace-pre-wrap border-b border-neutral-700 py-1">{msg}</pre>
+                ))}
+            </div>
         </div>
     );
 }
 
 export default App;
 
-                      
