@@ -125,6 +125,10 @@ function App() {
     };
 
     const handleSearch = async (e) => {
+        // *** THIS IS THE DEBUGGING LINE I ADDED ***
+        // It will print the API key to your browser's developer console.
+        console.log("API Key being used:", import.meta.env.VITE_YOUTUBE_API_KEY);
+
         if (e) e.preventDefault();
         if (!searchTerm.trim()) return;
         if (!API_KEY) {
@@ -309,7 +313,7 @@ function App() {
                 </div>
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between h-20">
-                        <div className="flex items-center gap-3 w-1/3">
+                        <div className="flex items-center gap-3 w-1/h-full">
                             {nowPlaying ? <>
                                 <img src={nowPlaying.thumbnail} alt={nowPlaying.title} className="w-12 h-12 rounded-md object-cover shadow-sm"/>
                                 <div className="truncate">
@@ -347,3 +351,4 @@ function App() {
 
 export default App;
 
+                      
