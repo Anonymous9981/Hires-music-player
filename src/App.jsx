@@ -357,8 +357,7 @@ function App() {
         setIsPlaylistModalOpen(false);
         closeMenu();
     };
-
-    const renderView = () => {
+      const renderView = () => {
         switch (activeView) {
             case 'playlists':
                 return (
@@ -422,4 +421,199 @@ function App() {
                                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-pink-600"></div>
                             </div>
                         ) : searchResults.length > 0 ? (
-                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-4 gap-y-6">
+                                {searchResults.map(track => (
+                                    <div key={track.id} className="group">
+                                        <div onClick={() => handleSelectTrack(track)} className="relative aspect-square rounded-lg overflow-hidden shadow-md transition-all duration-300 group-hover:shadow-xl cursor-pointer">
+                                            <img src={track.thumbnail} alt={track.title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"/>
+                                            <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                                <div className="bg-white/80 backdrop-blur-sm rounded-full p-3 transform transition-transform active:scale-90">
+                                                    <Icon path={ICONS.PLAY_FILLED} className="w-8 h-8 text-black" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-start justify-between mt-2">
+                                            <div className="flex-grow truncate">
+                                                <p className="font-semibold truncate text-sm">{track.title}</p>
+                                                <p className="text-neutral-500 truncate text-xs">{track.artist}</p>
+                                            </div>
+                                            <button onClick={() => openMenu(track)} className="p-1 -mr-1 flex-shrink-0">
+                                                <Icon path={ICONS.DOTS_VERTICAL} className="w-5 h-5 text-neutral-400" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                             <div className="text-center py-16 text-neutral-500">
+                                <h2 className="text-2xl font-bold mb-2">No Results Found</h2>
+                                <p>Try searching for something else.</p>
+                             </div>
+                        )}
+                    </div>
+                );
+        }
+    };
+
+    return (
+        <div className="bg-white text-black min-h-screen font-['Inter'] flex flex-col antialiased">
+            {/* Silent audio element for background playback */}
+            <audio ref={silentAudioRef} loop src="data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA" />
+            <div id="youtube-player-container" className="hidden"></div>
+            
+            <div className="flex flex-grow overflow-hidden">
+                {/* --- DESKTOP SIDEBAR --- */}
+                <aside className="w-64 bg-neutral-50 border-r border-neutral-200 p-4 flex-shrink-0 hidden md:flex flex-col">
+                    <div className="flex items-center justify-between mb-8">
+                        <div className="flex items-center gap-2">
+                           <button className="w-3 h-3 bg-red-500 rounded-full"></button>
+                           <button className="w-3 h-3 bg-yellow-500 rounded-full"></button>
+                           <button className="w-3 h-3 bg-green-500 rounded-full"></button>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <Icon path={ICONS.CHEVRON_LEFT} className="w-6 h-6 text-neutral-400" />
+                            <Icon path={ICONS.CHEVRON_RIGHT} className="w-6 h-6 text-neutral-300" />
+                        </div>
+                    </div>
+                    <form onSubmit={handleSearch} className="relative mb-8">
+                        <Icon path={ICONS.SEARCH} className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400" />
+                        <input
+                            className="w-full bg-neutral-200 rounded-md py-2 pl-10 pr-3 text-sm placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-pink-500"
+                            placeholder="Search"
+                            type="search"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </form>
+                    <nav className="space-y-2">
+                        <a href="#" onClick={(e) => { e.preventDefault(); setActiveView('browse'); }} className={`flex items-center gap-3 font-semibold p-2 rounded-md transition-colors ${activeView === 'browse' ? 'text-pink-600 bg-pink-100' : 'text-neutral-700 hover:bg-neutral-100'}`}>
+                            <Icon path={ICONS.BROWSE} className="w-6 h-6" />
+                            <span>Browse</span>
+                        </a>
+                        <a href="#" onClick={(e) => { e.preventDefault(); setActiveView('playlists'); }} className={`flex items-center gap-3 font-semibold p-2 rounded-md transition-colors ${activeView === 'playlists' ? 'text-pink-600 bg-pink-100' : 'text-neutral-700 hover:bg-neutral-100'}`}>
+                            <Icon path={ICONS.PLAYLIST} className="w-6 h-6" />
+                            <span>Playlists</span>
+                        </a>
+                         <a href="#" onClick={(e) => { e.preventDefault(); setActiveView('settings'); }} className={`flex items-center gap-3 font-semibold p-2 rounded-md transition-colors ${activeView === 'settings' ? 'text-pink-600 bg-pink-100' : 'text-neutral-700 hover:bg-neutral-100'}`}>
+                            <Icon path={ICONS.SETTINGS} className="w-6 h-6" />
+                            <span>Settings</span>
+                        </a>
+                    </nav>
+                </aside>
+
+                <main className="flex-grow bg-white overflow-y-auto pb-32 md:pb-0">
+                    {renderView()}
+                </main>
+            </div>
+
+            {/* --- PLAYER FOOTER --- */}
+            <footer className="bg-neutral-50/80 backdrop-blur-md border-t border-neutral-200 fixed bottom-0 left-0 right-0 z-10">
+                <div className="w-full bg-neutral-300 h-1 group cursor-pointer" ref={progressRef} onClick={handleSeek}>
+                    <div className="bg-neutral-500 h-1 relative pointer-events-none" style={{ width: `${progress}%` }}>
+                       <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-neutral-800 rounded-full opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                    </div>
+                </div>
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex items-center justify-between h-20">
+                        <div className="flex items-center gap-3 w-1/3">
+                            {nowPlaying ? <>
+                                <img src={nowPlaying.thumbnail} alt={nowPlaying.title} className="w-12 h-12 rounded-md object-cover shadow-sm"/>
+                                <div className="truncate hidden sm:block">
+                                    <p className="font-semibold truncate text-sm">{nowPlaying.title}</p>
+                                    <p className="text-xs text-neutral-600 truncate">{nowPlaying.artist}</p>
+                                </div>
+                            </> : <div className="w-12 h-12 bg-neutral-200 rounded-md"></div>}
+                        </div>
+
+                        <div className="flex items-center gap-4 sm:gap-6 w-auto justify-center">
+                            <PlayerButton onClick={playPrevious} disabled={queue.length < 2} iconPath={ICONS.REWIND} />
+                            <button onClick={togglePlayPause} className="bg-neutral-200 text-neutral-800 rounded-full p-3 hover:bg-neutral-300 transition-transform transform active:scale-90 shadow-sm">
+                                <Icon path={isPlaying ? ICONS.PAUSE_FILLED : ICONS.PLAY_FILLED} className="w-8 h-8" />
+                            </button>
+                            <PlayerButton onClick={playNext} disabled={queue.length < 2} iconPath={ICONS.FORWARD} />
+                        </div>
+
+                        <div className="w-1/3 flex items-center justify-end gap-3">
+                           <Icon path={volume > 0 ? ICONS.VOLUME_HIGH : ICONS.VOLUME_OFF} className="w-5 h-5 text-neutral-500 hidden sm:block" />
+                           <input 
+                             type="range" 
+                             min="0" 
+                             max="100" 
+                             value={volume}
+                             onChange={handleVolumeChange}
+                             className="w-24 h-1 bg-neutral-300 rounded-lg appearance-none cursor-pointer accent-neutral-600 hidden sm:block"
+                           />
+                        </div>
+                    </div>
+                </div>
+                 {/* --- MOBILE BOTTOM NAVIGATION --- */}
+                <nav className="md:hidden flex items-center justify-around bg-neutral-50 border-t border-neutral-200 h-16">
+                    <a href="#" onClick={(e) => { e.preventDefault(); setActiveView('browse'); }} className={`flex flex-col items-center gap-1 ${activeView === 'browse' ? 'text-pink-600' : 'text-neutral-500'}`}>
+                        <Icon path={ICONS.BROWSE} />
+                        <span className="text-xs">Browse</span>
+                    </a>
+                    <a href="#" onClick={(e) => { e.preventDefault(); setActiveView('playlists'); }} className={`flex flex-col items-center gap-1 ${activeView === 'playlists' ? 'text-pink-600' : 'text-neutral-500'}`}>
+                        <Icon path={ICONS.PLAYLIST} />
+                        <span className="text-xs">Playlists</span>
+                    </a>
+                    <a href="#" onClick={(e) => { e.preventDefault(); setActiveView('settings'); }} className={`flex flex-col items-center gap-1 ${activeView === 'settings' ? 'text-pink-600' : 'text-neutral-500'}`}>
+                        <Icon path={ICONS.SETTINGS} />
+                        <span className="text-xs">Settings</span>
+                    </a>
+                </nav>
+            </footer>
+
+            {/* --- MODALS --- */}
+            {isMenuOpen && (
+                <div className="fixed inset-0 bg-black/50 z-40 flex items-end" onClick={closeMenu}>
+                    <div className="bg-white w-full rounded-t-2xl p-4" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex items-center gap-3 mb-4 border-b pb-4">
+                            <img src={menuTrack.thumbnail} alt={menuTrack.title} className="w-12 h-12 rounded-md object-cover"/>
+                            <div className="truncate">
+                                <p className="font-semibold truncate">{menuTrack.title}</p>
+                                <p className="text-sm text-neutral-500 truncate">{menuTrack.artist}</p>
+                            </div>
+                        </div>
+                        <nav className="flex flex-col gap-1">
+                            <button onClick={handleAddToQueue} className="text-left p-3 hover:bg-neutral-100 rounded-lg">Play Next</button>
+                            <button onClick={() => { setIsPlaylistModalOpen(true); }} className="text-left p-3 hover:bg-neutral-100 rounded-lg">Add to Playlist...</button>
+                            <button onClick={handleShare} className="text-left p-3 hover:bg-neutral-100 rounded-lg">Share</button>
+                        </nav>
+                    </div>
+                </div>
+            )}
+
+            {isPlaylistModalOpen && (
+                 <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setIsPlaylistModalOpen(false)}>
+                    <div className="bg-white rounded-2xl p-4 w-full max-w-sm" onClick={(e) => e.stopPropagation()}>
+                        <h2 className="text-lg font-bold mb-4">Add to playlist</h2>
+                        <div className="space-y-2 max-h-48 overflow-y-auto">
+                            {playlists.map(p => (
+                                <button key={p.id} onClick={() => addToPlaylist(p.id)} className="w-full text-left p-3 hover:bg-neutral-100 rounded-lg">{p.name}</button>
+                            ))}
+                        </div>
+                         <div className="border-t mt-4 pt-4">
+                            <div className="flex gap-2">
+                                <input 
+                                    type="text" 
+                                    value={newPlaylistName}
+                                    onChange={(e) => setNewPlaylistName(e.target.value)}
+                                    placeholder="New playlist name"
+                                    className="w-full bg-neutral-200 rounded-md py-2 px-3 text-sm placeholder-neutral-500"
+                                />
+                                <button onClick={createPlaylist} className="bg-pink-600 text-white font-semibold px-4 py-2 rounded-md">Create</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+}
+
+export default App;
+
+
+  
+
+          
