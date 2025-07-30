@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import ThemeToggle from './components/ThemeToggle';
 import Toast, { showToast } from './components/Toast';
 import LoadingSpinner from './components/LoadingSpinner';
-import MusicVisualizer from './components/MusicVisualizer';
+// Corrected import to match actual filename (capital “L” in “MusicVisuaLizer”)
+import MusicVisualizer from './components/MusicVisuaLizer';
 import './styles/animations.css';
 
 // Dummy track list for demonstration
