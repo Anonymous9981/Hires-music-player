@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@vitejs/plugin-react": "^4.0.0",
+    "autoprefixer": "^10.4.14",
     "vite-tsconfig-paths": "^4.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
