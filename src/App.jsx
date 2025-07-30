@@ -612,16 +612,18 @@ function App() {
                                 ))}
                             </div>
                         ) : (
-                             <div className="text-center py-16 text-neutral-500 dark:text-neutral-400">
-                                <h2 className="text-2xl font-bold mb-2">No Results Found</h2>
-                                <p>Try searching for something else.</p>
-                             </div>
-                        )}
-                    </div>
-                );
-return (
-    <div className="bg-white dark:bg-gray-900 text-black dark:text-white min-h-screen font-['Inter'] flex flex-col antialiased transition-colors duration-300">
-        <Toast />
+                                                     <div className="text-center py-16 text-neutral-500 dark:text-neutral-400">
+                            <h2 className="text-2xl font-bold mb-2">No Results Found</h2>
+                            <p>Try searching for something else.</p>
+                        </div>
+                    )}
+                </div>
+            );
+        
+            return (
+                <div className="bg-white dark:bg-gray-900 text-black dark:text-white min-h-screen font-['Inter'] flex flex-col antialiased transition-colors duration-300">
+                    <Toast />
+
         {/* Silent audio element for background playback */}
         <audio ref={silentAudioRef} loop src="data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA" />
         <div id="youtube-player-container" className="hidden"></div>
