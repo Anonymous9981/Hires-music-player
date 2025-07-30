@@ -13,9 +13,7 @@ const ICONS = {
   CHEVRON_RIGHT: "M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z",
   MUSIC_NOTE: "M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z",
   RADIO: "M3.24 6.15C2.51 6.43 2 7.17 2 8v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2H8.3l8.26-3.34L15.28 1 3.24 6.15zM7 20c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm13-8h-2v-2h2v2zm-4 0h-2v-2h2v2z",
-  BROWSE: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93s3.05-7.44 7-7.93v15.86zm2-15.86c1.03.13 2 .45 2.87.93L15.87 5c-1.03-.13-2-.45-2.87-.93zM14 19.07c-1.03-.13-2-.45-2.87-.93L10.13 19c1.03.13 2 .45 2.87.93z",
-  SUN: "M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.64 5.64c-.39-.39-1.02-.39-1.41 0-.39.39-.39 1.02 0 1.41l1.41 1.41c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41L5.64 5.64zm12.72 12.72c-.39-.39-1.02-.39-1.41 0-.39.39-.39 1.02 0 1.41l1.41 1.41c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41l-1.41-1.41zM5.64 18.36c.39-.39.39-1.02 0-1.41-.39-.39-1.02-.39-1.41 0l-1.41 1.41c-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0l1.41-1.41zm12.72-12.72c.39-.39.39-1.02 0-1.41-.39-.39-1.02-.39-1.41 0l-1.41 1.41c-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0l1.41-1.41z",
-  MOON: "M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.76 0-5-2.24-5-5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"
+  BROWSE: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93s3.05-7.44 7-7.93v15.86zm2-15.86c1.03.13 2 .45 2.87.93L15.87 5c-1.03-.13-2-.45-2.87-.93zM14 19.07c-1.03-.13-2-.45-2.87-.93L10.13 19c1.03.13 2 .45 2.87.93z"
 };
 
 const Icon = ({ path, className = "w-6 h-6" }) => (
@@ -28,7 +26,7 @@ const PlayerButton = ({ onClick, disabled, iconPath, className = "w-9 h-9" }) =>
     <button
         onClick={onClick}
         disabled={disabled}
-        className="text-neutral-700 disabled:text-neutral-400 dark:text-neutral-300 dark:disabled:text-neutral-600 transition-transform active:scale-90"
+        className="text-neutral-700 disabled:text-neutral-400 transition-transform active:scale-90"
     >
         <Icon path={iconPath} className={className} />
     </button>
@@ -45,7 +43,6 @@ function App() {
     const [progress, setProgress] = useState(0);
     const [volume, setVolume] = useState(80);
     const [isApiReady, setIsApiReady] = useState(false);
-    const [theme, setTheme] = useState('light'); // 'light' or 'dark'
     const playerRef = useRef(null);
     const progressRef = useRef(null);
     const intervalRef = useRef(null);
@@ -53,19 +50,6 @@ function App() {
     const API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY; 
 
     const nowPlaying = queue[currentTrackIndex];
-    
-    // Effect to apply the theme class to the HTML element
-    useEffect(() => {
-        if (theme === 'dark') {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-    }, [theme]);
-
-    const toggleTheme = () => {
-        setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
-    };
 
     useEffect(() => {
         if (window.YT) {
@@ -92,12 +76,27 @@ function App() {
             const newPlayer = new window.YT.Player('youtube-player-container', {
                 videoId: nowPlaying.id,
                 height: '0', width: '0',
-                playerVars: { autoplay: 1, controls: 0, fs: 0, iv_load_policy: 3, modestbranding: 1, playsinline: 1, disablekb: 1, rel: 0 },
-                events: { 'onReady': onPlayerReady, 'onStateChange': onPlayerStateChange, 'onError': onPlayerError }
+                playerVars: {
+                    autoplay: 1, controls: 0, fs: 0, 
+                    iv_load_policy: 3,
+                    modestbranding: 1,
+                    playsinline: 1,
+                    disablekb: 1,
+                    rel: 0
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange,
+                    'onError': onPlayerError,
+                }
             });
             playerRef.current = newPlayer;
         }
-        return () => { if (playerRef.current) { playerRef.current.destroy(); } }
+        return () => {
+            if (playerRef.current) {
+                playerRef.current.destroy();
+            }
+        }
     }, [isApiReady, nowPlaying]);
 
     useEffect(() => {
@@ -129,7 +128,7 @@ function App() {
         if (e) e.preventDefault();
         if (!searchTerm.trim()) return;
         if (!API_KEY) {
-            setError("YouTube API Key is not configured.");
+            setError("YouTube API Key is not configured. Please set it up in your environment variables.");
             return;
         }
         setIsLoading(true);
@@ -187,10 +186,12 @@ function App() {
     const handleSeek = (e) => {
         const progressContainer = progressRef.current;
         if (!progressContainer || !playerRef.current) return;
+
         const clickPositionX = e.clientX - progressContainer.getBoundingClientRect().left;
         const containerWidth = progressContainer.offsetWidth;
         const seekRatio = clickPositionX / containerWidth;
         const duration = playerRef.current.getDuration() || 0;
+        
         playerRef.current.seekTo(duration * seekRatio, true);
         setProgress(seekRatio * 100);
     };
@@ -220,11 +221,11 @@ function App() {
     }
 
     return (
-        <div className="bg-white text-black dark:bg-black dark:text-neutral-300 min-h-screen font-['Inter'] flex flex-col antialiased">
+        <div className="bg-white text-black min-h-screen font-['Inter'] flex flex-col antialiased">
             <div id="youtube-player-container" className="hidden"></div>
             
             <div className="flex flex-grow overflow-hidden">
-                <aside className="w-64 bg-neutral-50 dark:bg-neutral-900 border-r border-neutral-200 dark:border-neutral-800 p-4 flex-shrink-0 hidden md:flex flex-col">
+                <aside className="w-64 bg-neutral-50 border-r border-neutral-200 p-4 flex-shrink-0 hidden md:flex flex-col">
                     <div className="flex items-center justify-between mb-8">
                         <div className="flex items-center gap-2">
                            <button className="w-3 h-3 bg-red-500 rounded-full"></button>
@@ -232,14 +233,14 @@ function App() {
                            <button className="w-3 h-3 bg-green-500 rounded-full"></button>
                         </div>
                         <div className="flex items-center gap-2">
-                            <Icon path={ICONS.CHEVRON_LEFT} className="w-6 h-6 text-neutral-400 dark:text-neutral-600" />
-                            <Icon path={ICONS.CHEVRON_RIGHT} className="w-6 h-6 text-neutral-300 dark:text-neutral-700" />
+                            <Icon path={ICONS.CHEVRON_LEFT} className="w-6 h-6 text-neutral-400" />
+                            <Icon path={ICONS.CHEVRON_RIGHT} className="w-6 h-6 text-neutral-300" />
                         </div>
                     </div>
                     <form onSubmit={handleSearch} className="relative mb-8">
-                        <Icon path={ICONS.SEARCH} className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400 dark:text-neutral-500" />
+                        <Icon path={ICONS.SEARCH} className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400" />
                         <input
-                            className="w-full bg-neutral-200 dark:bg-neutral-800 rounded-md py-2 pl-10 pr-3 text-sm text-neutral-900 dark:text-neutral-300 placeholder-neutral-500 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-pink-500"
+                            className="w-full bg-neutral-200 rounded-md py-2 pl-10 pr-3 text-sm placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-pink-500"
                             placeholder="Search"
                             type="search"
                             value={searchTerm}
@@ -247,57 +248,51 @@ function App() {
                         />
                     </form>
                     <nav className="space-y-2">
-                        <a href="#" className="flex items-center gap-3 text-pink-600 font-semibold bg-pink-100 dark:bg-pink-900/40 dark:text-pink-400 p-2 rounded-md">
+                        <a href="#" className="flex items-center gap-3 text-pink-600 font-semibold bg-pink-100 p-2 rounded-md">
                             <Icon path={ICONS.BROWSE} className="w-6 h-6" />
                             <span>Browse</span>
                         </a>
-                        <a href="#" className="flex items-center gap-3 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 font-semibold p-2 rounded-md transition-colors">
+                        <a href="#" className="flex items-center gap-3 text-neutral-700 hover:bg-neutral-100 font-semibold p-2 rounded-md transition-colors">
                             <Icon path={ICONS.RADIO} className="w-6 h-6" />
                             <span>Radio</span>
                         </a>
-                         <a href="#" className="flex items-center gap-3 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 font-semibold p-2 rounded-md transition-colors">
+                         <a href="#" className="flex items-center gap-3 text-neutral-700 hover:bg-neutral-100 font-semibold p-2 rounded-md transition-colors">
                             <Icon path={ICONS.MUSIC_NOTE} className="w-6 h-6" />
                             <span>Library</span>
                         </a>
                     </nav>
-                    <div className="mt-auto">
-                        <button onClick={toggleTheme} className="w-full flex items-center gap-3 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 font-semibold p-2 rounded-md transition-colors">
-                            <Icon path={theme === 'light' ? ICONS.MOON : ICONS.SUN} className="w-6 h-6" />
-                            <span>{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</span>
-                        </button>
-                    </div>
                 </aside>
 
-                <main className="flex-grow bg-white dark:bg-black overflow-y-auto">
+                <main className="flex-grow bg-white overflow-y-auto">
                     <div className="p-4 sm:p-6 lg:p-8">
                         <h1 className="text-3xl font-bold mb-6">Browse</h1>
                         {error && (
-                            <div className="bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 p-4 rounded-lg mb-4 text-center border border-red-200 dark:border-red-500/30">{error}</div>
+                            <div className="bg-red-100 text-red-700 p-4 rounded-lg mb-4 text-center border border-red-200">{error}</div>
                         )}
 
                         {isLoading ? (
                             <div className="flex justify-center items-center h-64">
-                                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-pink-600 dark:border-pink-500"></div>
+                                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-pink-600"></div>
                             </div>
                         ) : searchResults.length > 0 ? (
                             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                                 {searchResults.map(track => (
                                     <div key={track.id} onClick={() => handleSelectTrack(track)} className="cursor-pointer group">
-                                        <div className="relative aspect-square rounded-lg overflow-hidden shadow-md dark:shadow-black/20 transition-all duration-300 group-hover:shadow-xl">
+                                        <div className="relative aspect-square rounded-lg overflow-hidden shadow-md transition-all duration-300 group-hover:shadow-xl">
                                             <img src={track.thumbnail} alt={track.title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"/>
                                             <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                                <div className="bg-white/80 dark:bg-black/80 backdrop-blur-sm rounded-full p-3 transform transition-transform active:scale-90">
-                                                    <Icon path={ICONS.PLAY_FILLED} className="w-8 h-8 text-black dark:text-white" />
+                                                <div className="bg-white/80 backdrop-blur-sm rounded-full p-3 transform transition-transform active:scale-90">
+                                                    <Icon path={ICONS.PLAY_FILLED} className="w-8 h-8 text-black" />
                                                 </div>
                                             </div>
                                         </div>
                                         <p className="font-semibold truncate mt-2 text-sm">{track.title}</p>
-                                        <p className="text-neutral-500 dark:text-neutral-400 truncate text-xs">{track.artist}</p>
+                                        <p className="text-neutral-500 truncate text-xs">{track.artist}</p>
                                     </div>
                                 ))}
                             </div>
                         ) : (
-                             <div className="text-center py-16 text-neutral-500 dark:text-neutral-600">
+                             <div className="text-center py-16 text-neutral-500">
                                 <h2 className="text-2xl font-bold mb-2">No Results Found</h2>
                                 <p>Try searching for something else.</p>
                              </div>
@@ -306,10 +301,10 @@ function App() {
                 </main>
             </div>
 
-            <footer className="bg-neutral-50/80 dark:bg-neutral-900/80 backdrop-blur-md border-t border-neutral-200 dark:border-neutral-800 mt-auto z-10 flex-shrink-0">
-                <div className="w-full bg-neutral-300 dark:bg-neutral-700 h-1 group cursor-pointer" ref={progressRef} onClick={handleSeek}>
-                    <div className="bg-neutral-500 dark:bg-neutral-400 h-1 relative pointer-events-none" style={{ width: `${progress}%` }}>
-                       <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-neutral-800 dark:bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+            <footer className="bg-neutral-50/80 backdrop-blur-md border-t border-neutral-200 mt-auto z-10 flex-shrink-0">
+                <div className="w-full bg-neutral-300 h-1 group cursor-pointer" ref={progressRef} onClick={handleSeek}>
+                    <div className="bg-neutral-500 h-1 relative pointer-events-none" style={{ width: `${progress}%` }}>
+                       <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-neutral-800 rounded-full opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
                     </div>
                 </div>
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -319,28 +314,28 @@ function App() {
                                 <img src={nowPlaying.thumbnail} alt={nowPlaying.title} className="w-12 h-12 rounded-md object-cover shadow-sm"/>
                                 <div className="truncate">
                                     <p className="font-semibold truncate text-sm">{nowPlaying.title}</p>
-                                    <p className="text-xs text-neutral-600 dark:text-neutral-400 truncate">{nowPlaying.artist}</p>
+                                    <p className="text-xs text-neutral-600 truncate">{nowPlaying.artist}</p>
                                 </div>
-                            </> : <div className="w-12 h-12 bg-neutral-200 dark:bg-neutral-800 rounded-md"></div>}
+                            </> : <div className="w-12 h-12 bg-neutral-200 rounded-md"></div>}
                         </div>
 
                         <div className="flex items-center gap-6 w-1/3 justify-center">
                             <PlayerButton onClick={playPrevious} disabled={queue.length < 2} iconPath={ICONS.REWIND} />
-                            <button onClick={togglePlayPause} className="bg-neutral-200 dark:bg-neutral-700 text-neutral-800 dark:text-neutral-200 rounded-full p-3 hover:bg-neutral-300 dark:hover:bg-neutral-600 transition-transform transform active:scale-90 shadow-sm">
+                            <button onClick={togglePlayPause} className="bg-neutral-200 text-neutral-800 rounded-full p-3 hover:bg-neutral-300 transition-transform transform active:scale-90 shadow-sm">
                                 <Icon path={isPlaying ? ICONS.PAUSE_FILLED : ICONS.PLAY_FILLED} className="w-8 h-8" />
                             </button>
                             <PlayerButton onClick={playNext} disabled={queue.length < 2} iconPath={ICONS.FORWARD} />
                         </div>
 
                         <div className="w-1/3 flex items-center justify-end gap-3">
-                           <Icon path={volume > 0 ? ICONS.VOLUME_HIGH : ICONS.VOLUME_OFF} className="w-5 h-5 text-neutral-500 dark:text-neutral-400" />
+                           <Icon path={volume > 0 ? ICONS.VOLUME_HIGH : ICONS.VOLUME_OFF} className="w-5 h-5 text-neutral-500" />
                            <input 
                              type="range" 
                              min="0" 
                              max="100" 
                              value={volume}
                              onChange={handleVolumeChange}
-                             className="w-24 h-1 bg-neutral-300 dark:bg-neutral-700 rounded-lg appearance-none cursor-pointer accent-neutral-600 dark:accent-pink-500"
+                             className="w-24 h-1 bg-neutral-300 rounded-lg appearance-none cursor-pointer accent-neutral-600"
                            />
                         </div>
                     </div>
@@ -348,3 +343,7 @@ function App() {
             </footer>
         </div>
     );
+}
+
+export default App;
+
